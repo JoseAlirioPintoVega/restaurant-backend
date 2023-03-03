@@ -109,7 +109,7 @@ exports.getOrders = catchAsync(async (req, res, next) => {
             attributes: { exclude: ['createdAt', 'updatedAt'] },
             include: {
               model: Restaurant,
-              attributes: { include: ['createdAt', 'updatedAt'] },
+              attributes: ['name', 'address', 'rating'],
             },
           },
         ],
