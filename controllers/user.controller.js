@@ -2,6 +2,9 @@ const User = require('../models/user.model');
 const catchAsync = require('../utils/catchAsync');
 const bcrypt = require('bcryptjs');
 const generateJWT = require('../utils/jwt');
+const Order = require('../models/order.model');
+const Restaurant = require('../models/restaurat.model');
+const Meal = require('../models/meal.model');
 
 exports.createUser = catchAsync(async (req, res, next) => {
   const { name, email, password, role = 'normal' } = req.body;
@@ -92,7 +95,11 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 
 exports.getOrders = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
-  const orders = await User.findOne({ id: sessionUser.id });
+
+  const orders = await User.findOne({
+    where: { id: sessionUser.id },
+    include: [{ model: Order }],
+  });
   // falta hacer la logica  de las  relaciones  del order
   res.status(200).json({
     status: 'success',
@@ -105,7 +112,23 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
   const { id } = req.params;
 
-  const OrdersbyId = await User.findOne({ id: sessionUser.id });
+  const OrdersbyId = await User.findOne({
+    where: { id: sessionUser.id },
+    attributes: { exclude: ['createdAt', 'updatedAt', 'status'] },
+    include: [
+      {
+        model: Order,
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        where: { id },
+        include: [
+          {
+            model: Meal,
+            attributes: { exclude: ['createdAt', 'updatedAt', 'status'] },
+          },
+        ],
+      },
+    ],
+  });
   // falta hacer la logica  de las  relaciones  del order
   res.status(200).json({
     status: 'success',

@@ -22,6 +22,7 @@ exports.findOrderById = catchAsync(async (req, res, next) => {
 
 exports.protectAccountOwnerByOrder = catchAsync(async (req, res, next) => {
   const { order, sessionUser } = req;
+
   console.log(order.userId, sessionUser.id);
   if (order.userId !== sessionUser.id) {
     return next(new AppError('You do not owner this Order', 401));

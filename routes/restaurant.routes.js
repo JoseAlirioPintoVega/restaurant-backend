@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { check } = require('express-validator');
 const {
   createRestaurant,
   getRestaurantsActive,
@@ -56,7 +57,18 @@ router.delete(
 
 router.use(protect);
 
-router.post('/reviews/:id', validRestauranId, createReview);
+router.post(
+  '/reviews/:id',
+  validRestauranId,
+  [
+    check('rating', 'The rating must be mandatory').not().isEmpty(),
+    check('rating', 'The rating need are be between 1 and 5 ').isIn([
+      1, 2, 3, 4, 5,
+    ]),
+    validateFields,
+  ],
+  createReview
+);
 
 router.patch(
   '/reviews/:restaurantId/:id',

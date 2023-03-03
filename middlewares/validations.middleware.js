@@ -17,10 +17,10 @@ exports.createUserValidator = [
 exports.createRestaurantValidator = [
   check('name', 'The username must be mandatory').not().isEmpty(),
   check('address', 'The address must be mandatory').not().isEmpty(),
-  check('rating', 'The rating need are be between 1 and 5 ').isLength({
-    min: 0,
-    max: 1,
-  }),
+  check('rating', 'The rating must be mandatory').not().isEmpty(),
+  check('rating', 'The rating need are be between 1 and 5 ').isIn([
+    1, 2, 3, 4, 5,
+  ]),
 ];
 exports.createMealValidator = [
   check('name', 'The username must be mandatory').not().isEmpty(),
