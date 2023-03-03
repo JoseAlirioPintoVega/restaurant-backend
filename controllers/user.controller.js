@@ -97,8 +97,24 @@ exports.getOrders = catchAsync(async (req, res, next) => {
   const { sessionUser } = req;
 
   const orders = await User.findOne({
+    attributes: { exclude: ['createdAt', 'updatedAt'] },
     where: { id: sessionUser.id },
-    include: [{ model: Order }],
+    include: [
+      {
+        model: Order,
+        attributes: { exclude: ['createdAt', 'updatedAt'] },
+        include: [
+          {
+            model: Meal,
+            attributes: { exclude: ['createdAt', 'updatedAt'] },
+            include: {
+              model: Restaurant,
+              attributes: { include: ['createdAt', 'updatedAt'] },
+            },
+          },
+        ],
+      },
+    ],
   });
   // falta hacer la logica  de las  relaciones  del order
   res.status(200).json({
@@ -124,6 +140,12 @@ exports.getOrderById = catchAsync(async (req, res, next) => {
           {
             model: Meal,
             attributes: { exclude: ['createdAt', 'updatedAt', 'status'] },
+            include: [
+              {
+                model: Restaurant,
+                attributes: { exclude: ['createdAt', 'updatedAt'] },
+              },
+            ],
           },
         ],
       },
