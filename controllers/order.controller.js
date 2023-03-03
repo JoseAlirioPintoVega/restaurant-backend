@@ -9,7 +9,7 @@ exports.createOrder = catchAsync(async (req, res, next) => {
   const { meal } = req;
   const totalP = meal.price * quantity;
 
-  const newOrder = Order.create({
+  const newOrder = await Order.create({
     mealId,
     userId: sessionUser.id,
     totalPrice: totalP,
